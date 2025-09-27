@@ -1,0 +1,15 @@
+1. What happens to memory when fork() creates a new process? Does the child get a complete copy of the parent's memory?
+-When fork() creates a new process, the child gets a virtual copy of the memory space of the parent. 
+The child gains acess to all the same variables however its memory becomes private from the parent as soon as changes occur, otherwise they share the same memory space. 
+
+2. Why must unused pipe ends be closed? What would happen if you forgot to close them?
+-Unused pipe ends must be closed to make way for other processes. The writing process can only occur once the read end of the pipe is closed and vice versa.
+If unused ends are not closed then a process will never reach the end of the file as it would be blocked by the unused ends.
+
+3. What are zombie processes and how does wait() prevent them? What would happen to your system if zombie processes accumulated?
+-Zombie processes are child processes that are finished executing but still have entries in the process table due to the parent not collecting their exit status. Wait() prevents zombies by telling the kernel that the child exit code 
+is ready to be collected and to free the process table entry. If zombies are left unchecked and accumulate then the process table will overcrowd and prevent new processes from being created which could lead to system instability.
+
+4. How does the kernel track parent-child relationships? What happens if a parent process dies before its children?
+The kernel tracks parent-child relations by maintaining a process hierarchy tree in which forked children maintain parent PID. If a parent process dies before its children then the children are assigned new parents of PID 1 which prevents 
+them from becoming zombies. 
